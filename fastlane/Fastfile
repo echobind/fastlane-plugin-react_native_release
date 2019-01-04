@@ -1,0 +1,3 @@
+lane :test do
+  react_native_release
+end
