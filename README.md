@@ -10,6 +10,19 @@ This project is a [_fastlane_](https://github.com/fastlane/fastlane) plugin. To 
 fastlane add_plugin react_native_release
 ```
 
+### Ensure your project confirms to Semantic Versioning
+Projects using React Native Release should use Semantic Versioning. At the very least, you need major, minor, and patch numbers in your version.
+
+**iOS**
+Use `agvtool` to get and set a version across your project. From the `ios` directory, do the following:
+* `agvtool what-marketing-version` to see your current version
+* `agvtool new-marketing-version 0.1.0` to set a new version
+
+**Android**
+* Set `versionName` in `app/build.gradle`. (`versionName "0.1.0"`)
+
+:exclamation: If you don't complete these steps, releases will fail. :exclamation:
+
 ## About React Native Release
 
 Simplify releases for React Native apps.
@@ -31,7 +44,7 @@ If a hotfix is required the flow looks like this:
 
 Here's what it looks like in action:
 ![Releasing a beta](https://api.monosnap.com/image/download?id=IEISpG4vgMeGPl31it8GxPbiTror2i)
-(add `"release": "bundle exec fastlane run react_native_release"` as a yarn script)
+(this example uses `"release": "bundle exec fastlane run react_native_release"` as a yarn script)
 
 ## Example
 
