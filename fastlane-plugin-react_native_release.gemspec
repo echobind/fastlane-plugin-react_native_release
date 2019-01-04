@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = 'chris@echobind.com'
 
   spec.summary       = 'Simplify releases for React Native apps.'
-  # spec.homepage      = "https://github.com/<GITHUB_USERNAME>/fastlane-plugin-react_native_release"
+  spec.homepage      = "https://github.com/echobind/fastlane-plugin-react_native_release"
   spec.license       = "MIT"
 
   spec.files         = Dir["lib/**/*"] + %w(README.md LICENSE)
