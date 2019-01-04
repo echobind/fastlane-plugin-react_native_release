@@ -1,4 +1,4 @@
-# react_native_release plugin
+# React Native Release 
 
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-react_native_release)
 
@@ -10,7 +10,7 @@ This project is a [_fastlane_](https://github.com/fastlane/fastlane) plugin. To 
 fastlane add_plugin react_native_release
 ```
 
-## About react_native_release
+## About React Native Release
 
 Simplify releases for React Native apps.
 
@@ -28,6 +28,10 @@ The main branch and tagging flow looks like this:
 
 If a hotfix is required the flow looks like this:
 ![Hotfix Flow](https://monosnap.com/image/ctwlef0A3TbLbRk1xJrlVroNB8F9ot.png)
+
+Here's what it looks like in action:
+![Releasing a beta](https://api.monosnap.com/image/download?id=IEISpG4vgMeGPl31it8GxPbiTror2i)
+(add `"release": "bundle exec fastlane run react_native_release"` as a yarn script)
 
 ## Example
 
