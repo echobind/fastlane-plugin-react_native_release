@@ -129,19 +129,25 @@ module Fastlane
 
         file = Tempfile.new('')
 
-        system "yes | fastlane spaceauth -u #{ENV["FASTLANE_ENV_USERNAME"]}"
-        system "pbpaste > #{file.path}"
+        if !ENV["FASTLANE_ENV_USERNAME"];
+          UI.user_error!("No FASTLANE_ENV_USERNAME var at <root>/.env\nFASTLANE_ENV_USERNAME is used to authenticate with the App Store for iOS releases.")
+        elsif !ENV["FASTLANE_ENV_GIT_URL"];
+          UI.user_error!("No FASTLANE_ENV_GIT_URL var at <root>/.env\nFASTLANE_ENV_GIT_URL is used to store the App Store Connect session to upload releases on CI.")
+        else          
+          system "yes | fastlane spaceauth -u #{ENV["FASTLANE_ENV_USERNAME"]}"
+          system "pbpaste > #{file.path}"
 
-        UI.message "File created at: #{file.path}"
-      
-        other_action.cryptex(
-          type: "import",
-          in: file.path,
-          key: "FASTLANE_SESSION",
-          git_url: ENV["FASTLANE_ENV_GIT_URL"]
-        )
+          UI.message "File created at: #{file.path}"
+        
+          other_action.cryptex(
+            type: "import",
+            in: file.path,
+            key: "FASTLANE_SESSION",
+            git_url: ENV["FASTLANE_ENV_GIT_URL"]
+          )
 
-        UI.message "Uploaded FASTLANE_SESSION securely to git repository."
+          UI.message "Uploaded FASTLANE_SESSION securely to git repository."
+        end
       end
 
       def self.description
