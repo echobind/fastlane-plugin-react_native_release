@@ -83,7 +83,7 @@ module Fastlane
         target = options[:target]
       
         sh "git checkout #{target}"
-        sh "git merge origin/#{branch} -m 'Merge #{branch} -> #{target} [skip ci]'" do |status|
+        sh "git merge origin/#{branch} --no-ff -m 'Merge #{branch} -> #{target} [skip ci]' " do |status|
           unless status.success?
             UI.error "Failed to merge #{branch} into #{target}"
           end
