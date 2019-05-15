@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   # since this would cause a circular dependency
 
   spec.add_dependency 'fastlane-plugin-android_versioning', '~> 0.5.0'
+  spec.add_dependency 'fastlane-plugin-cryptex', '~> 0.1.4'
 
   spec.add_development_dependency('pry')
   spec.add_development_dependency('bundler')

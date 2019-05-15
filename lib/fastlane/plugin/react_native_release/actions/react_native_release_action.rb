@@ -8,6 +8,9 @@ module Fastlane
 
       def self.run(params)
         require 'fastlane/plugin/android_versioning'
+
+        create_fastlane_session
+
         target = UI.select "Select a release type:", VALID_TARGETS
         is_beta = target.include?('beta')
         is_hotfix = params[:hotfix] === true
@@ -80,7 +83,7 @@ module Fastlane
         target = options[:target]
       
         sh "git checkout #{target}"
-        sh "git merge origin/#{branch} -m 'Merge #{branch} -> #{target} [skip ci]'" do |status|
+        sh "git merge origin/#{branch} --no-ff -m 'Merge #{branch} -> #{target} [skip ci]' " do |status|
           unless status.success?
             UI.error "Failed to merge #{branch} into #{target}"
           end
@@ -116,6 +119,35 @@ module Fastlane
       
       def self.prompt_for_version
         UI.select("Update Version?: ", ["none", "major", "minor", "patch"])
+      end
+
+      # 
+      def self.create_fastlane_session()
+        require 'fastlane/plugin/cryptex'
+
+        UI.message "Generating a new FASTLANE_SESSION."
+
+        file = Tempfile.new('')
+
+        if !ENV["FASTLANE_ENV_USERNAME"];
+          UI.user_error!("No FASTLANE_ENV_USERNAME var at <root>/.env\nFASTLANE_ENV_USERNAME is used to authenticate with the App Store for iOS releases.")
+        elsif !ENV["FASTLANE_ENV_GIT_URL"];
+          UI.user_error!("No FASTLANE_ENV_GIT_URL var at <root>/.env\nFASTLANE_ENV_GIT_URL is used to store the App Store Connect session to upload releases on CI.")
+        else          
+          system "yes | fastlane spaceauth -u #{ENV["FASTLANE_ENV_USERNAME"]}"
+          system "pbpaste > #{file.path}"
+
+          UI.message "File created at: #{file.path}"
+        
+          other_action.cryptex(
+            type: "import",
+            in: file.path,
+            key: "FASTLANE_SESSION",
+            git_url: ENV["FASTLANE_ENV_GIT_URL"]
+          )
+
+          UI.message "Uploaded FASTLANE_SESSION securely to git repository."
+        end
       end
 
       def self.description
