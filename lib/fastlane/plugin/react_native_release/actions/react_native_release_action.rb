@@ -8,8 +8,10 @@ module Fastlane
 
       def self.run(params)
         require 'fastlane/plugin/android_versioning'
-
-        create_fastlane_session
+        
+        if UI.select("Generate a fastlane session token? (The session token is used to authenticate with the App Store to upload iOS releases.)", ["yes", "no"]) === 'yes'
+          create_fastlane_session
+        end
 
         target = UI.select "Select a release type:", VALID_TARGETS
         is_beta = target.include?('beta')
