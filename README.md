@@ -23,6 +23,30 @@ Use `agvtool` to get and set a version across your project. From the `ios` direc
 
 :exclamation: If you don't complete these steps, releases will fail. :exclamation:
 
+### Configuring builds to TestFlight and AppStore Connect on CI
+
+To upload builds to TestFlight or AppStore Connect, your CI will need a session cookie that was generated with a 2FA code. React Native Release generates and stores this code securely in Github, when the local release script runs, and CI consumes the cookie during the IOS build upload step for jobs uploading to TestFlight or AppStore Connect.
+
+To enable the fastlane session add an `.env` file at `<root>/fastlane/.env` with the following configuration.
+
+| KEY | TYPE | DESCRIPTION |
+|-----|------|-------------|
+| FASTLANE_ENV_GIT_URL | String | The repository where the hashed session token will be stored. **Ensure this repository before running the release script!** (Must be a separate repository solely for securely storing the session token). |
+| FASTLANE_ENV_USERNAME | String | The Apple Developer Account email to authenticate with 2FA and generate a session token for. |
+
+Note: Apple requires 2FA on all accounts now and the IOS build steps will fail if you attempt to upload to TestFlight or AppStore Connect without a session token.
+
+#### Important!
+
+Before running the release script, we will need to authenticate locally and generate an initial token to store credentials in the keychain to be used  in the release script.
+
+1. Using the same *Apple Developer Account* (`FASTLANE_ENV_USERNAME`) in the `<root>/fastlane/.env` authenticate on [AppStore Connect](https://appstoreconnect.apple.com/login).
+
+2. Then run `fastlane spaceauth -u {YOUR FASTLANE_ENV_USERNAME}`, enter your Apple Developer Account password and complete the 2FA code if prompted.
+
+These steps are required for every machine, otherwise the release script will fail.
+
+
 ## About React Native Release
 
 Simplify releases for React Native apps.
