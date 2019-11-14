@@ -33,6 +33,8 @@ To enable the fastlane session add an `.env` file at `<root>/fastlane/.env` with
 |-----|------|-------------|
 | FASTLANE_ENV_GIT_URL | String | The repository where the hashed session token will be stored. **Ensure this repository before running the release script!** (Must be a separate repository solely for securely storing the session token). |
 | FASTLANE_ENV_USERNAME | String | The Apple Developer Account email to authenticate with 2FA and generate a session token for. |
+| CRYPTEX_PASSWORD | String | The secret key used to encrypt/decrypt the `FASTLANE_SESSION` value. |
+
 
 Note: Apple requires 2FA on all accounts now and the IOS build steps will fail if you attempt to upload to TestFlight or AppStore Connect without a session token.
 
