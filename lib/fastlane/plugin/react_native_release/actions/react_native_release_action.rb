@@ -9,9 +9,7 @@ module Fastlane
       def self.run(params)
         require 'fastlane/plugin/android_versioning'
         
-        if UI.select("Generate a fastlane session token? (The session token is used to authenticate with the App Store to upload iOS releases.)", ["yes", "no"]) === 'yes'
-          create_fastlane_session
-        end
+        create_fastlane_session
 
         target = UI.select "Select a release type:", VALID_TARGETS
         is_beta = target.include?('beta')
@@ -129,24 +127,25 @@ module Fastlane
 
         UI.message "Generating a new FASTLANE_SESSION."
 
-        file = Tempfile.new('')
-
         fastlane_session_git_url =  ENV["FASTLANE_ENV_GIT_URL"]
         fastlane_session_username = ENV["FASTLANE_ENV_USERNAME"]
+
+        spaceship_cookie_path = "#{File.expand_path('~')}/.fastlane/spaceship/#{fastlane_session_username}/cookie"
+        
+        if File.exists?(spaceship_cookie_path)
+          system `rm #{spaceship_cookie_path}`
+        end
 
         if !fastlane_session_username;
           UI.user_error!("No FASTLANE_ENV_USERNAME var at <root>/fastlane/.env\nFASTLANE_ENV_USERNAME is used to authenticate with the App Store for iOS releases.")
         elsif !fastlane_session_git_url;
           UI.user_error!("No FASTLANE_ENV_GIT_URL var at <root>/fastlane/.env\nFASTLANE_ENV_GIT_URL is used to store the App Store Connect session to upload releases on CI.")
         else          
-          system "yes | fastlane spaceauth -u #{fastlane_session_username}"
-          system "pbpaste > #{file.path}"
+          system "fastlane spaceauth -u #{fastlane_session_username}";
 
-          UI.message "File created at: #{file.path}"
-        
           other_action.cryptex(
             type: "import",
-            in: file.path,
+            in: spaceship_cookie_path,
             key: "FASTLANE_SESSION",
             git_url: fastlane_session_git_url
           )
