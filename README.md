@@ -33,19 +33,10 @@ To enable the fastlane session add an `.env` file at `<root>/fastlane/.env` with
 |-----|------|-------------|
 | FASTLANE_ENV_GIT_URL | String | The repository where the hashed session token will be stored. **Ensure this repository before running the release script!** (Must be a separate repository solely for securely storing the session token). |
 | FASTLANE_ENV_USERNAME | String | The Apple Developer Account email to authenticate with 2FA and generate a session token for. |
+| CRYPTEX_PASSWORD | String | The secret key used to encrypt/decrypt the `FASTLANE_SESSION` value. |
+
 
 Note: Apple requires 2FA on all accounts now and the IOS build steps will fail if you attempt to upload to TestFlight or AppStore Connect without a session token.
-
-#### Important!
-
-Before running the release script, we will need to authenticate locally and generate an initial token to store credentials in the keychain to be used  in the release script.
-
-1. Using the same *Apple Developer Account* (`FASTLANE_ENV_USERNAME`) in the `<root>/fastlane/.env` authenticate on [AppStore Connect](https://appstoreconnect.apple.com/login).
-
-2. Then run `fastlane spaceauth -u {YOUR FASTLANE_ENV_USERNAME}`, enter your Apple Developer Account password and complete the 2FA code if prompted.
-
-These steps are required for every machine, otherwise the release script will fail.
-
 
 ## About React Native Release
 
