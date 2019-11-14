@@ -130,6 +130,7 @@ module Fastlane
         fastlane_session_git_url =  ENV["FASTLANE_ENV_GIT_URL"]
         fastlane_session_username = ENV["FASTLANE_ENV_USERNAME"]
         fastlane_session_password = ENV["CRYPTEX_PASSWORD"]
+        spaceship_cookie_path = "#{File.expand_path('~')}/.fastlane/spaceship/#{fastlane_session_username}/cookie"
 
         if !fastlane_session_username;
           UI.user_error!("No FASTLANE_ENV_USERNAME var at <root>/fastlane/.env\nFASTLANE_ENV_USERNAME is used to authenticate with the App Store for iOS releases.")
@@ -138,8 +139,6 @@ module Fastlane
         elsif !fastlane_session_password;
           UI.user_error!("No CRYPTEX_PASSWORD var at <root>/fastlane/.env\nCRYPTEX_PASSWORD is used to encrypt/decrypt the App Store Connect session.")
         else          
-          spaceship_cookie_path = "#{File.expand_path('~')}/.fastlane/spaceship/#{fastlane_session_username}/cookie"
-          
           UI.message "Please enter the 6 digit 2FA code if one is sent to your device; otherwise the script will continue automatically."
           
           `fastlane spaceauth -u #{fastlane_session_username.shellescape}`
