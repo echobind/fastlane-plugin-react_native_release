@@ -141,8 +141,9 @@ module Fastlane
           spaceship_cookie_path = "#{File.expand_path('~')}/.fastlane/spaceship/#{fastlane_session_username}/cookie"
           
           UI.message "Please enter the 6 digit 2FA code if one is sent to your device; otherwise the script will continue automatically."
+          UI.message "Please enter the 6 digit 2FA code if one is sent to your device; otherwise the script will continue automatically."
           
-          `fastlane spaceauth -u #{fastlane_session_username}`
+          `fastlane spaceauth -u #{fastlane_session_username.shellescape}`
 
           other_action.cryptex(
             type: "import",
