@@ -25,9 +25,24 @@ Use `agvtool` to get and set a version across your project. From the `ios` direc
 
 ### Configuring builds to TestFlight and AppStore Connect on CI
 
-To upload builds to TestFlight or AppStore Connect, your CI will need a session cookie that was generated with a 2FA code. React Native Release generates and stores this code securely in Github, when the local release script runs, and CI consumes the cookie during the IOS build upload step for jobs uploading to TestFlight or AppStore Connect.
+To upload builds to TestFlight or AppStore Connect, CI will need a cookie that was generated with a 2FA code. The `react_native_release` lane generates and stores this code securely in Github. We then use this token on CI during the IOS build upload step to TestFlight or AppStore Connect.
 
-To enable the fastlane session add an `.env` file at `<root>/fastlane/.env` with the following configuration.
+This is managed by the `fastlane-plugin-react_native_release` plugin in the iOS project. Start by adding the plugin to the iOS project by running:
+
+```bash
+cd ios && fastlane add_plugin react_native_release
+```
+
+Then add the `read_fastlane_session` command to the end of the `before_all` step in your `<root>/ios/Fastfile`:
+
+```yaml
+  before_all do
+    setup_circle_ci
+    read_fastlane_session
+  end
+```
+
+Next add an `.env` file at `<root>/fastlane/.env` with the following configuration.
 
 | KEY | TYPE | DESCRIPTION |
 |-----|------|-------------|
