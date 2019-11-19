@@ -7,8 +7,6 @@ module Fastlane
       def self.run(params)
         require 'fastlane/plugin/cryptex'
 
-        UI.message "Reading fastlane session.."
-
         fastlane_session_git_url =  ENV["FASTLANE_ENV_GIT_URL"]
         fastlane_session_username = ENV["FASTLANE_ENV_USERNAME"]
         fastlane_session_password = ENV["CRYPTEX_PASSWORD"]
@@ -20,18 +18,20 @@ module Fastlane
         elsif !fastlane_session_password
           UI.user_error!("No CRYPTEX_PASSWORD var at <root>/fastlane/.env\nCRYPTEX_PASSWORD is used to encrypt/decrypt the App Store Connect session.")
         else
-          spaceship_cookie_file = Tempfile.new('')
+          UI.message "Reading fastlane session.."
+
+          fastlane_session_cookie_path = Tempfile.new('')
 
           other_action.cryptex(
             type: "export",
-            out: spaceship_cookie_file.path,
+            out: fastlane_session_cookie_path.path,
             key: "FASTLANE_SESSION",
             git_url: ENV["FASTLANE_ENV_GIT_URL"]
           )
 
-          fastlane_session = (open spaceship_cookie_file.path).read
+          fastlane_session = (open fastlane_session_cookie_path.path).read
 
-          UI.message spaceship_cookie_file.path
+          UI.message fastlane_session_cookie_path.path
           UI.message fastlane_session
 
           ENV["FASTLANE_SESSION"] = fastlane_session
