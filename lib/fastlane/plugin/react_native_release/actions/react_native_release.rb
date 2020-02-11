@@ -4,45 +4,39 @@ require_relative '../helper/react_native_release_helper'
 module Fastlane
   module Actions
     class ReactNativeReleaseAction < Action
-      VALID_TARGETS = %w{beta production}
+      VALID_RELEASE_TYPES = %w{beta release hotfix}
 
+      # params:
+      # release_type, alpha_branch, beta_branch, release_branch, hotfix_destination
       def self.run(params)
         require 'fastlane/plugin/android_versioning'
-
         other_action.create_fastlane_session
 
-        target = UI.select "Select a release type:", VALID_TARGETS
-        is_beta = target.include?('beta')
-        is_hotfix = params[:hotfix] === true
+        release_type = params[:release_type] || UI.select("Select a release type:", VALID_RELEASE_TYPES)
+        is_beta = release_type.include?('beta')
+        is_release = release_type.include?('release')
+        is_hotfix = release_type.include?('hotfix')
+
         ios_version = other_action.get_version_number(xcodeproj: params[:xcodeproj], target: File.basename(params[:xcodeproj], '.*'))
         android_version = other_action.get_version_name(app_project_dir: params[:android_app_dir])
         should_prompt_for_version_bump = params[:prompt_for_version_bump] === true || is_beta
 
         if is_beta
-          tag_prefix = 'betas'
-          base_branch = params[:alpha_branch]
-          target_branch = params[:beta_branch]
-        else
-          tag_prefix = 'releases'
-          base_branch = params[:beta_branch]
-          target_branch = params[:production_branch]
+          # TODO: ohter branches
+          verify_git_branch_state(beta_branch)
         end
 
-        # Ensure we're on the right branch and in a good state
-        other_action.ensure_git_branch(branch: base_branch)
-        other_action.ensure_git_status_clean
-        sh "git branch --set-upstream-to=origin/#{base_branch} #{base_branch}"
-        other_action.git_pull
+        # TODO: flows
 
         # Cut a fresh branch unless this is a hotfix
-        if !is_hotfix
-          # delete an existing branch if we have one
-          sh "git show-ref #{target_branch}" do |status|
-            sh "git branch -D #{target_branch}" if status.success?
-          end
+        # if !is_hotfix
+        #   # delete an existing branch if we have one
+        #   sh "git show-ref #{target_branch}" do |status|
+        #     sh "git branch -D #{target_branch}" if status.success?
+        #   end
           
-          sh "git checkout -b #{target_branch}"
-        end
+        #   sh "git checkout -b #{target_branch}"
+        # end
 
         # Tag / Bump version
         if should_prompt_for_version_bump
@@ -61,13 +55,13 @@ module Fastlane
           end
         end
 
-        # Tag it
-        tag_name = "#{tag_prefix}/ios-#{ios_version}-android-#{android_version}"
+        # Tag it. TODO: release
+        tag_name = "release/ios-#{ios_version}-android-#{android_version}"
         other_action.add_git_tag(tag: tag_name)
-        other_action.push_to_git_remote(
-          local_branch: target_branch,
-          force: true
-        )
+        # other_action.push_to_git_remote(
+        #   local_branch: target_branch,
+        #   force: true
+        # )
 
         merge_branch(branch: target_branch, target: base_branch)
         return if is_beta
@@ -83,7 +77,7 @@ module Fastlane
         target = options[:target]
       
         sh "git checkout #{target}"
-        sh "git merge origin/#{branch} --no-ff -m 'Merge #{branch} -> #{target} [skip ci]' " do |status|
+        sh "git merge origin/#{branch} --no-ff -m 'chore(release): Merge #{branch} -> #{target} [skip ci]' " do |status|
           unless status.success?
             UI.error "Failed to merge #{branch} into #{target}"
           end
@@ -115,6 +109,14 @@ module Fastlane
           app_project_dir: "#{Dir.pwd}/android/app",
           bump_type: version_bump
         )
+      end
+
+      def self.verify_git_branch_state(branch)
+        # Ensure we're on the right branch and in a good state
+        # other_action.ensure_git_branch(branch)
+        other_action.ensure_git_status_clean
+        sh "git branch --set-upstream-to=origin/#{branch} #{branch}"
+        other_action.git_pull
       end
       
       def self.prompt_for_version
