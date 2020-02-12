@@ -74,6 +74,8 @@ Use `agvtool` to get and set a version across your project. From the `ios` direc
 
 This project is a [_fastlane_](https://github.com/fastlane/fastlane) plugin. Since React Native projects contain both `iOS` and `Android` apps, we need to install the plugin in multiple places:
 
+### Install plugin into fastlane folders
+
 1. In the root of your project. This is used to run release commands over the entire project.
 
 ```bash
@@ -92,7 +94,7 @@ fastlane add_plugin react_native_release
 fastlane add_plugin react_native_release
 ```
 
-### ENV files
+### Add or update .env files
 
 We leverage `.env` files in a number of different places.
 
@@ -135,7 +137,7 @@ To upload builds to TestFlight or AppStore Connect, CI will need to restore a pr
 
 ## Example
 
-See /example to see how to use the plugin.
+See /example to see how to use the plugin. (TODO)
 
 ## Run tests for this plugin
 
