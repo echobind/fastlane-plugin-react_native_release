@@ -45,7 +45,7 @@ module Fastlane
         [
           FastlaneCore::ConfigItem.new(key: :namespace,
                                        env_name: "FL_ADD_APP_VAR_NAMESPACE",
-                                       description: "What namespace should we use? (beta, release, ENTER = root)", # a short description of this parameter
+                                       description: "What namespace should we use? (alpha, beta, release, ENTER = root)", # a short description of this parameter
                                        type: String,
                                        verify_block: lambda do |value|
                                         unless Helper::ReactNativeReleaseHelper::VALID_NAMESPACES.include?(value)
