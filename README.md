@@ -131,7 +131,7 @@ We leverage `.env` files in a number of different places.
 
 ### Configuring builds to upload to TestFlight and AppStore Connect on CI
 
-To upload builds to TestFlight or AppStore Connect, CI will need to restore a previously generated session. While possible to use an Application Specific Password to upload builds, it will not have the additional permissions required for other TestFlight / App Store operations.
+To upload builds to TestFlight or AppStore Connect, CI will need to restore a previously generated session. While possible to use an Application Specific Password to upload builds, it will not have the additional permissions required for other TestFlight / App Store operations. As such, we require generating a session.
 
 ## Example
 
