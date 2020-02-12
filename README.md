@@ -40,11 +40,11 @@ We do this for portability and ease of configuration. Outside of the ENV vars to
 
 For App ENV vars, we provide some additional functionality via namespaces. Valid namespaces are `alpha`, `beta`, `release`, and empty (root). Root ENV vars are "global". Namespaced variables are merged into the Root ENV vars at build time via the `decrypt_app_vars` action. This allows you to easily overwrite ENV vars for specific types of builds, all without configuring separate targets and schemes in XCode.
 
-The main branch and tagging flow looks like this (needs to be updated):
+The main branch and tagging flow looks like this (note this may be out of date. Revisit after workflow updates):
 
 ![Branch / Tag Flow](https://monosnap.com/image/Tn71leeWdCwwjSdwjYKHK4pnyjG1v4.png)
 
-If a hotfix is required the flow looks like this (needs to be updated):
+If a hotfix is required the flow looks like this (note this may be out of date. Revisit after workflow updates):
 
 ![Hotfix Flow](https://monosnap.com/image/ctwlef0A3TbLbRk1xJrlVroNB8F9ot.png)
 
