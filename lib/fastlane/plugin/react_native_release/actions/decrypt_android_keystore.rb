@@ -12,16 +12,12 @@ module Fastlane
           env_file_exists = File.exists?(file)
 
           if (env_file_exists && UI.confirm("This will overwrite your existing .env file. Proceed?"))
-            other_action.cryptex(
-              type: "export",
-              out: file,
-              key: key
-            )
-
-            # There is currently a bug where the keystore needs to be in multiple paths
-            sh("cp #{file} ../android")
-          else
+            self.export_and_decrypt_keystore(file,key)
+            
+          elsif(env_file_exists)
             UI.abort_with_message!("Stepping away...")
+          else
+            self.export_and_decrypt_keystore(file,key)
           end
         # If we don't have a keystore, cryptex will throw an exception.
         rescue => ex
@@ -29,6 +25,18 @@ module Fastlane
         end
 
         UI.success("Decrypted #{key} to keystore.")
+      end
+
+      def self.export_and_decrypt_keystore(file,key)
+        other_action.cryptex(
+          type: "export",
+          out: file,
+          key: key,
+          verbose: true
+        )
+         # There is currently a bug where the keystore needs to be in multiple paths
+         # Optimized for the CI process to be running from the lane in android directory
+         sh("cp ./app/android.keystore ./")
       end
 
       # Creates a new android keystore based on the provided params. Wraps Cryptex.
@@ -112,7 +120,7 @@ module Fastlane
 
       def self.authors
         # So no one will ever forget your contribution to fastlane :) You are awesome btw!
-        ["cball", "isaiahgrey93"]
+        ["cball", "isaiahgrey93", "cmejet"]
       end
 
       def self.is_supported?(platform)
