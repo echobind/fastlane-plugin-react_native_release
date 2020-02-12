@@ -18,10 +18,16 @@ module Fastlane
         end
 
         app_vars = Dotenv.parse(env_path)
-        existing_app_vars = other_action.cryptex(
-          type: 'export_env',
-          key: cryptex_app_key,
-        )
+        existing_app_vars = {}
+
+        begin
+          existing_app_vars = other_action.cryptex(
+            type: 'export_env',
+            key: cryptex_app_key,
+          )
+        rescue => ex
+          # If key doesn't exist cryptex will error
+        end
 
         other_action.cryptex(
           type: "import_env",

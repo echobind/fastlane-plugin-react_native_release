@@ -9,15 +9,20 @@ module Fastlane
         key = params[:key]
         value = params[:value]
         cryptex_app_key = app_key_for(namespace)
+        existing_app_vars = {}
 
         if !UI.confirm("This will add #{key}=#{value} to the #{cryptex_app_key} namespace in the encrypted context repo. Proceed?")
           UI.abort_with_message!("Stepping away...")
         end
 
-        existing_app_vars = other_action.cryptex(
-          type: 'export_env',
-          key: cryptex_app_key,
-        )
+        begin
+          existing_app_vars = other_action.cryptex(
+            type: 'export_env',
+            key: cryptex_app_key,
+          )
+        rescue => ex
+          # If key doesn't exist cryptex will error
+        end
 
         other_action.cryptex(
           type: "import_env",
