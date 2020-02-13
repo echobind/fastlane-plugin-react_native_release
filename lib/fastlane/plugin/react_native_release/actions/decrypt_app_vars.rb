@@ -35,7 +35,7 @@ module Fastlane
 
         merged_vars = app_vars.merge(namespaced_vars)
         has_env_file = File.exists?(Helper::ReactNativeReleaseHelper::APP_ENV_PATH)
-        should_write_env = write_env && !is_ci && (!has_env_file || UI.confirm("It looks like you already have an .env file. Overwrite it?"))
+        should_write_env = write_env && (is_ci || !has_env_file || UI.confirm("It looks like you already have an .env file. Overwrite it?"))
 
         # write an env file with the merged values
         if (should_write_env)
