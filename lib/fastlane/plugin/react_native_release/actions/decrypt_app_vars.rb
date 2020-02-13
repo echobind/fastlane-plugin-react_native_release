@@ -39,7 +39,8 @@ module Fastlane
 
         # write an env file with the merged values
         if (should_write_env)
-          open('.env', 'w') do |f|
+          # TODO: handle running action from root and from ios/android folders. This will not work properly in the root as is.
+          open('../.env', 'w') do |f|
             merged_vars.each {|key, value| f.puts "#{key}=#{value}" }
           end
 
