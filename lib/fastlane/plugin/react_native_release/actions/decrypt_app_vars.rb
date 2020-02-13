@@ -5,7 +5,7 @@ module Fastlane
   module Actions
     class DecryptAppVarsAction < Action
       def self.run(params)
-        is_ci = ENV[:ci].to_s === 'true'
+        is_ci = ENV['CI'] === 'true'
         namespace = params[:namespace]
         write_env = params[:write_env]
         default_cryptex_app_key = Helper::ReactNativeReleaseHelper::APP_CRYPTEX_KEY

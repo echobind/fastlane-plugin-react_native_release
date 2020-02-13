@@ -5,7 +5,7 @@ module Fastlane
   module Actions
     class AddAppVarAction < Action
       def self.run(params)
-        is_ci = ENV[:ci].to_s === 'true'
+        is_ci = ENV['CI'] === 'true'
         namespace = params[:namespace]
         key = params[:key]
         value = params[:value]
