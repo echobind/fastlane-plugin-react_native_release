@@ -5,7 +5,6 @@ module Fastlane
   module Actions
     class ReadFastlaneSessionAction < Action
       def self.run(params)
-        username = params[:username]
         key = Helper::ReactNativeReleaseHelper::FASTLANE_SESSION_CRYPTEX_KEY
         fastlane_session_git_url =  ENV["CRYPTEX_GIT_URL"]
         fastlane_session_password = ENV["CRYPTEX_PASSWORD"]
