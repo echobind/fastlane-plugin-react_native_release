@@ -5,13 +5,14 @@ module Fastlane
   module Actions
     class AddAppVarAction < Action
       def self.run(params)
+        is_ci = ENV['CI'] === 'true'
         namespace = params[:namespace]
         key = params[:key]
         value = params[:value]
         cryptex_app_key = app_key_for(namespace)
         existing_app_vars = {}
 
-        if !UI.confirm("This will add #{key}=#{value} to the #{cryptex_app_key} namespace in the encrypted context repo. Proceed?")
+        if !is_ci && !UI.confirm("This will add #{key}=#{value} to the #{cryptex_app_key} namespace in the encrypted context repo. Proceed?")
           UI.abort_with_message!("Stepping away...")
         end
 

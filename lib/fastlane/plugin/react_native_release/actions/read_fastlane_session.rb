@@ -1,43 +1,31 @@
 require 'fastlane/action'
-require_relative '../helper/react_native_release_helper'
+require 'fastlane/plugin/cryptex'
 
 module Fastlane
   module Actions
     class ReadFastlaneSessionAction < Action
       def self.run(params)
-        require 'fastlane/plugin/cryptex'
-
-        fastlane_session_git_url =  ENV["FASTLANE_ENV_GIT_URL"]
-        fastlane_session_username = ENV["FASTLANE_ENV_USERNAME"]
+        key = Helper::ReactNativeReleaseHelper::FASTLANE_SESSION_CRYPTEX_KEY
+        fastlane_session_git_url =  ENV["CRYPTEX_GIT_URL"]
         fastlane_session_password = ENV["CRYPTEX_PASSWORD"]
+        fastlane_session_cookie_path = Tempfile.new('')
 
-        if !fastlane_session_username
-          UI.user_error!("No FASTLANE_ENV_USERNAME var at <root>/fastlane/.env\nFASTLANE_ENV_USERNAME is used to authenticate with the App Store for iOS releases.")
-        elsif !fastlane_session_git_url
-          UI.user_error!("No FASTLANE_ENV_GIT_URL var at <root>/fastlane/.env\nFASTLANE_ENV_GIT_URL is used to store the App Store Connect session to upload releases on CI.")
-        elsif !fastlane_session_password
-          UI.user_error!("No CRYPTEX_PASSWORD var at <root>/fastlane/.env\nCRYPTEX_PASSWORD is used to encrypt/decrypt the App Store Connect session.")
-        else
-          UI.message "Reading fastlane session.."
+        UI.message "Reading fastlane session.."
 
-          fastlane_session_cookie_path = Tempfile.new('')
+        other_action.cryptex(
+          type: "export",
+          out: fastlane_session_cookie_path.path,
+          key: key,
+        )
 
-          other_action.cryptex(
-            type: "export",
-            out: fastlane_session_cookie_path.path,
-            key: "FASTLANE_SESSION",
-            git_url: ENV["FASTLANE_ENV_GIT_URL"]
-          )
+        fastlane_session = (open fastlane_session_cookie_path.path).read
 
-          fastlane_session = (open fastlane_session_cookie_path.path).read
+        UI.message fastlane_session_cookie_path.path
+        UI.message fastlane_session
 
-          UI.message fastlane_session_cookie_path.path
-          UI.message fastlane_session
+        ENV["FASTLANE_SESSION"] = fastlane_session
 
-          ENV["FASTLANE_SESSION"] = fastlane_session
-
-          UI.success "Read FASTLANE_SESSION from remote repository."
-        end
+        UI.success "Read FASTLANE_SESSION from remote repository."
       end
 
       def self.description

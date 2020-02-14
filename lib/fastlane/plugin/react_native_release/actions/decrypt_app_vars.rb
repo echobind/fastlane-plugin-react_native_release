@@ -5,6 +5,7 @@ module Fastlane
   module Actions
     class DecryptAppVarsAction < Action
       def self.run(params)
+        is_ci = ENV['CI'] === 'true'
         namespace = params[:namespace]
         write_env = params[:write_env]
         default_cryptex_app_key = Helper::ReactNativeReleaseHelper::APP_CRYPTEX_KEY
@@ -18,7 +19,7 @@ module Fastlane
           message = "This will decrypt and merge values from #{cryptex_app_key} into #{default_cryptex_app_key}. Proceed?"
         end
 
-        if !UI.confirm(message)
+        if !is_ci && !UI.confirm(message)
           UI.abort_with_message!("Stepping away...")
         end
 
@@ -34,11 +35,12 @@ module Fastlane
 
         merged_vars = app_vars.merge(namespaced_vars)
         has_env_file = File.exists?(Helper::ReactNativeReleaseHelper::APP_ENV_PATH)
-        should_write_env = write_env && (!has_env_file || UI.confirm("It looks like you already have an .env file. Overwrite it?"))
+        should_write_env = write_env && (is_ci || !has_env_file || UI.confirm("It looks like you already have an .env file. Overwrite it?"))
 
         # write an env file with the merged values
         if (should_write_env)
-          open('.env', 'w') do |f|
+          # TODO: handle running action from root and from ios/android folders. This will not work properly in the root as is.
+          open('../.env', 'w') do |f|
             merged_vars.each {|key, value| f.puts "#{key}=#{value}" }
           end
 

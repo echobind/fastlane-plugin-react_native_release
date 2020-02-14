@@ -131,6 +131,22 @@ We leverage `.env` files in a number of different places.
 
 **Note: In followup releases, we will add a `react-native-release init` script to generate these for you.**
 
+### Setup CI
+
+Step 1. If you've already setup Fastlane Match, skip this section. Each provider is different, but conceptually you'll want to:
+
+- Create a machine user account on your source code provider (GitHub or BitBucket) and invite that account to both the mobile and certs repo.
+- Enable CI on the main mobile repository by pressing "Follow" or "Build"
+- In an Incognito tab, log into your CI provider with the machine user account.
+- Add a user key instead of the default deploy key. This will allow CI to auth as the machine user and gain access to _both_ the mobile repo and the context repo.
+
+Step 2. Add the following to your CI environment variables:
+
+- CRYPTEX_GIT_URL=(your context repo ssh git url)
+- CRYPTEX_PASSWORD=(your context repo password)
+- CRYPTEX_VERBOSE=true
+- CRYPTEX_DIGEST=sha256 (note: if you have a pre-existing setup, you should set this to md5 - see https://github.com/hjanuschka/fastlane-plugin-cryptex/pull/10)
+
 ### Configuring builds to upload to TestFlight and AppStore Connect on CI
 
 To upload builds to TestFlight or AppStore Connect, CI will need to restore a previously generated session. While possible to use an Application Specific Password to upload builds, it will not have the additional permissions required for other TestFlight / App Store operations. As such, we require generating a session.
