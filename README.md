@@ -140,7 +140,12 @@ Step 1. If you've already setup Fastlane Match, skip this section. Each provider
 - In an Incognito tab, log into your CI provider with the machine user account.
 - Add a user key instead of the default deploy key. This will allow CI to auth as the machine user and gain access to _both_ the mobile repo and the context repo.
 
-Step 2. Add `CRYPTEX_GIT_URL` and `CRYPTEX_PASSWORD` to your CI environment variables.
+Step 2. Add the following to your CI environment variables:
+
+- CRYPTEX_GIT_URL=(your context repo ssh git url)
+- CRYPTEX_PASSWORD=(your context repo password)
+- CRYPTEX_VERBOSE=true
+- CRYPTEX_DIGEST=sha256 (note: if you have a pre-existing setup, you should set this to md5 - see https://github.com/hjanuschka/fastlane-plugin-cryptex/pull/10)
 
 ### Configuring builds to upload to TestFlight and AppStore Connect on CI
 
