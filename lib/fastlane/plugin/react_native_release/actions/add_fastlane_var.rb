@@ -6,7 +6,6 @@ module Fastlane
     class AddFastlaneVarAction < Action
       def self.run(params)
         is_ci = ENV['CI'] === 'true'
-        namespace = params[:namespace]
        
         key = params[:key]
         value = params[:value]
