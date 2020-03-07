@@ -6,19 +6,20 @@ module Fastlane
     class AddFastlaneVarAction < Action
       def self.run(params)
         is_ci = ENV['CI'] === 'true'
+        cryptex_key = Helper::ReactNativeReleaseHelper::FASTLANE_CRYPTEX_KEY
        
         key = params[:key]
         value = params[:value]
         existing_app_vars = {}
 
-        if !is_ci && !UI.confirm("This will add #{key}=#{value} to the #{FASTLANE_CRYPTEX_KEY} namespace in the encrypted context repo. Proceed?")
+        if !is_ci && !UI.confirm("This will add #{key}=#{value} to the #{cryptex_key} namespace in the encrypted context repo. Proceed?")
           UI.abort_with_message!("Stepping away...")
         end
 
         begin
           existing_vars = other_action.cryptex(
             type: 'export_env',
-            key:  FASTLANE_CRYPTEX_KEY,
+            key:  cryptex_key
           )
         rescue => ex
           # If key doesn't exist cryptex will error
@@ -26,7 +27,7 @@ module Fastlane
 
         other_action.cryptex(
           type: "import_env",
-          key:  FASTLANE_CRYPTEX_KEY,
+          key:  cryptex_key,
           hash: existing_vars.merge({ key => value })
         )
 
