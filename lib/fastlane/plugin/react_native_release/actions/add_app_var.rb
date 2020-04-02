@@ -87,22 +87,12 @@ module Fastlane
         [:ios, :android].include?(platform)
       end
 
-      # Returns a path for an env var. optionally namespaced
-      def self.env_path_for(namespace)
-        return default_env_path if namespace.strip.empty?
-        "#{default_env_path}.#{namespace}"
-      end
-
       # Returns the app key for cryptex. optionally namespaced
       def self.app_key_for(namespace)
         default_app_key = Helper::ReactNativeReleaseHelper::APP_CRYPTEX_KEY 
         return default_app_key if namespace.strip.empty?
 
         "#{namespace}_#{default_app_key}"
-      end
-
-      def self.default_env_path
-        Helper::ReactNativeReleaseHelper::APP_ENV_PATH
       end
     end
   end
