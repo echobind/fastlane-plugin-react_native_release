@@ -10,7 +10,7 @@ module Fastlane
         tag_prefix = params[:tag_prefix]
         is_releaseable = analyze_commits(match: "#{tag_prefix}*", ignore_scopes: ignore_scopes)
         next_version = lane_context[SharedValues::RELEASE_NEXT_VERSION]
-        next unless is_releaseable
+        # next unless is_releaseable
 
         next_version
       end

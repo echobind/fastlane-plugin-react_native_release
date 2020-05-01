@@ -30,13 +30,13 @@ module Fastlane
       def self.available_options
         [
           FastlaneCore::ConfigItem.new(key: :tag_prefix,
-                                       env_name: "FL_TAG_RELEASE_TAG_PREFIX"
+                                       env_name: "FL_TAG_RELEASE_TAG_PREFIX",
                                        description: "The prefix for tags (ex. ios/beta, android/beta)",
                                        type: String),
           FastlaneCore::ConfigItem.new(key: :next_version,
                                        env_name: "FL_TAG_RELEASE_NEXT_VERSION",
                                        description: "The next version to release",
-                                       type: String)
+                                       type: String),
           FastlaneCore::ConfigItem.new(key: :build_number,
                                        env_name: "FL_TAG_RELEASE_BUILD_NUMBER",
                                        description: "The current build number from CI",

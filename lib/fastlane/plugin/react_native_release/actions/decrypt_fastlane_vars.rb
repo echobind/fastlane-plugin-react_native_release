@@ -6,14 +6,46 @@ module Fastlane
     class DecryptFastlaneVarsAction < Action
       def self.run(params)
 
+        is_ci = ENV['CI'] === 'true'
+        write_env = params[:write_env]
+
         env = other_action.cryptex(
           type: "export_env",
           key: Helper::ReactNativeReleaseHelper::FASTLANE_CRYPTEX_KEY,
           set_env: params[:set_env]
         )
 
-        UI.success('Decrypted fastlane vars')
-        
+        should_write_env = write_env && !is_ci
+
+
+        UI.success('Successfully decrypted fastlane vars.')
+
+        # write fastlane env files
+        if (should_write_env)
+
+          UI.success('Writing fastlane vars to <root>/fastlane/.env.')
+          
+          open('./fastlane/.env', 'w') do |f|
+            env.each {|key, value| f.puts "#{key}=#{value}" }
+          end
+ 
+          UI.success('Writing fastlane vars to <root>/ios/fastlane/.env.')
+          
+          open('./ios/fastlane/.env', 'w') do |f|
+            env.each {|key, value| f.puts "#{key}=#{value}" }
+          end
+ 
+          UI.success('Writing fastlane vars to <root>/android/fastlane/.env.')
+          
+          open('./android/fastlane/.env', 'w') do |f|
+            env.each {|key, value| f.puts "#{key}=#{value}" }
+          end
+
+          UI.success('Fastlane .env files were successfully written.')
+        else
+          UI.success('Fastlane .env not generated.')
+        end
+
         env
       end
 
@@ -38,6 +70,11 @@ module Fastlane
           FastlaneCore::ConfigItem.new(key: :set_env,
                                        env_name: "FL_DECRYPT_FASTLANE_VARS_SET_ENV", # The name of the environment variable
                                        description: "Sets the decrypted values in env", # a short description of this parameter
+                                       type: Boolean,
+                                       default_value: true),
+          FastlaneCore::ConfigItem.new(key: :write_env,
+                                       env_name: "FL_DECRYPT_FASTLANE_VARS_WRITE_ENV", # The name of the environment variable
+                                       description: "If we should write fastlane .env files", # a short description of this parameter
                                        type: Boolean,
                                        default_value: true)
         ]
