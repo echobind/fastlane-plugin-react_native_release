@@ -71,6 +71,7 @@ module Fastlane
                                        env_name: "FL_DECRYPT_APP_VARS_NAMESPACE", # The name of the environment variable
                                        description: "What namespace should we use? (alpha, beta, release, ENTER = root)", # a short description of this parameter
                                        type: String,
+                                       short_option: "-n",
                                        verify_block: lambda do |value|
                                         unless Helper::ReactNativeReleaseHelper::VALID_NAMESPACES.include?(value)
                                           UI.user_error!("Invalid namespace #{value}. Valid targets are #{Helper::ReactNativeReleaseHelper::VALID_NAMESPACES.join(', ')}") 
@@ -81,6 +82,7 @@ module Fastlane
                                        env_name: "FL_DECRYPT_APP_VARS_WRITE_ENV", # The name of the environment variable
                                        description: "If we should write an .env file", # a short description of this parameter
                                        type: Boolean,
+                                       short_option: "-w",
                                        default_value: true)
         ]
       end
