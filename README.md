@@ -2,6 +2,8 @@
 
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-react_native_release)
 
+> NOTE: This plugin is being reworked fit into the larger ecosystem of React Native Release. What you see here may be out of date while we get everything finalized.
+
 Simplify releases for your React Native apps. This plugin contains many actions to help you with your release workflow.
 
 It helps cut a new `beta` or `release` version of your app:
