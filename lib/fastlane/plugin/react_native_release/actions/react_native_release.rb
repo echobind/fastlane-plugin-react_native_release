@@ -34,7 +34,7 @@ module Fastlane
         #   sh "git show-ref #{target_branch}" do |status|
         #     sh "git branch -D #{target_branch}" if status.success?
         #   end
-          
+
         #   sh "git checkout -b #{target_branch}"
         # end
 
@@ -75,15 +75,15 @@ module Fastlane
       def self.merge_branch(options)
         branch = options[:branch]
         target = options[:target]
-      
+
         sh "git checkout #{target}"
         sh "git merge origin/#{branch} --no-ff -m 'chore(release): Merge #{branch} -> #{target} [skip ci]' " do |status|
           unless status.success?
             UI.error "Failed to merge #{branch} into #{target}"
           end
-          
+
           other_action.push_to_git_remote(
-            local_branch: target  
+            local_branch: target
           )
         end
       end
@@ -91,18 +91,18 @@ module Fastlane
       def self.bump_ios_version(options)
         version_bump = options[:version] || prompt_for_version
         return if version_bump == "none"
-      
+
         UI.message "bumping ios #{options[:xcodeproj]} to #{version_bump}"
         other_action.increment_version_number(
           xcodeproj: options[:xcodeproj],
           bump_type: version_bump
         )
       end
-      
+
       def self.bump_android_version(options)
         version_bump = options[:version] || prompt_for_version
         return if version_bump == "none"
-      
+
         UI.message "bumping android to #{version_bump}"
         other_action.increment_version_name(
           # TODO: make param
@@ -118,7 +118,7 @@ module Fastlane
         sh "git branch --set-upstream-to=origin/#{branch} #{branch}"
         other_action.git_pull
       end
-      
+
       def self.prompt_for_version
         UI.select("Update Version?: ", ["none", "major", "minor", "patch"])
       end
@@ -180,15 +180,15 @@ module Fastlane
                              default_value: 'production'),
           FastlaneCore::ConfigItem.new(key: :target,
                                   env_name: "REACT_NATIVE_RELEASE_TARGET",
-                               description: "The release target. Valid targets are #{VALID_TARGETS.join(', ')}",
+                               description: "The release target. Valid targets are #{VALID_RELEASE_TYPES.join(', ')}",
                                   optional: true,
                                       type: String,
                               verify_block: lambda do |value|
-                                              unless VALID_TARGETS.find{|v| value == v}
-                                                UI.user_error!("Invalid target #{value}. Valid targets are #{VALID_TARGETS.join(', ')}") 
+                                              unless VALID_RELEASE_TYPES.find{|v| value == v}
+                                                UI.user_error!("Invalid target #{value}. Valid targets are #{VALID_RELEASE_TYPES.join(', ')}")
                                                 next
                                               end
-                                            end), 
+                                            end),
           FastlaneCore::ConfigItem.new(key: :hotfix,
                                   env_name: "REACT_NATIVE_RELEASE_HOTFIX",
                                description: "If this is a hotfix. Will only pull the latest branch and tag",
